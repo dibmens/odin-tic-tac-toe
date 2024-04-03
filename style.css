@@ -80,7 +80,7 @@ body {
 
 
 .chat-bubble-game {
-    background-color: grey;
+    background-color: steelblue;
     border-radius: 1em;
     display: grid;
     grid-template-columns: repeat(3,7em);
@@ -93,7 +93,7 @@ body {
 }
 
 .cells {
-    background-color: grey;
+    background-color: steelblue;
     border: none;
     font-size: 4.5em;
 }
@@ -105,9 +105,9 @@ body {
 
 
 .c1, .c2, .c3, .c4, .c5, .c6 {
-    border-bottom: 4px solid aliceblue;
+    border-bottom: 5px solid aliceblue;
 }
 
 .c1, .c2, .c4, .c5, .c7, .c8 {
-    border-right: 4px solid aliceblue;
+    border-right: 5px solid aliceblue;
 } 
