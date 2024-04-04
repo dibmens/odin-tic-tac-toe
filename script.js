@@ -59,6 +59,7 @@ function Cell(){
 })();
 
 (function WinCondition(){
+    let winner;
     const winMoves = [
         [0,1,2],
         [3,4,5],
@@ -80,13 +81,46 @@ function Cell(){
     findMatch = (winArray,index) => {
         return getPlayerMoves(getPlayer()).includes(winArray[index]);
     }
-    checkWin = () => {
+    getWinner = () => {
         getWinMoves().forEach(element => {
             if(findMatch(element,0) && findMatch(element,1) && findMatch(element,2)){
-                alert(`Player ${getPlayer()} wins at line ${element.toString()}`)
+                // alert(`Player ${getPlayer()} wins at line ${element.toString()}`)
+                winner = element;
             }
         });
+        return winner;
     }
+
 })();
 
+(function GameController(){
+    const takeInput = function(){
+        if(getPlayer() == 1){
+            playerMove = () => +prompt(`Choose from ${getPlayerMoves(0).toString()}`);
+            let input = playerMove();
+            if (getPlayerMoves(0).includes(input)) {
+                updateBoard(input,1)
+            } else if (!getBoard().includes(0)){
+                alert(`no more moves left!`)
+            }
+        } else if(getPlayer() == 2){
+            moveAi();
+            alert(`opponent has made a move`);
+        }
+    }
 
+    const playTurn = function(){
+        switchPlayer();
+        takeInput()
+        getWinner()
+        ? console.log(`Player ${getPlayer()} wins with ${getWinner().toString()} move`)
+        : playTurn();
+    }
+
+    runGame = () => {
+        resetBoard();
+        resetPlayer();
+        playTurn();
+    }
+  
+})();
