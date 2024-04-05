@@ -1,12 +1,11 @@
-function Cell(){
-    let value = 0;
-    getValue = () => value; 
-    setValue = (player) => value = player;
-    return {getValue, setValue};
-}
-
 (function GameBoard(){
     const grid = [];
+    const Cell = function (){
+        let value = 0;
+        getValue = () => value; 
+        setValue = (player) => value = player;
+        return {getValue, setValue};
+    }
     resetBoard = () => {
         grid.length = 0;
         for(i=0;i<9;i++){
@@ -20,7 +19,7 @@ function Cell(){
 (function PlayerState(){
     let player = 0;
     switchPlayer = () => 
-        player == 0 ? player = 1 : player == 1 ? player = 2 : player = 1;
+        player == 1 ? player = 2 : player = 1;
     resetPlayer = () => player = 0;
     getPlayer = () => player ; 
 })();
@@ -30,11 +29,11 @@ function Cell(){
     let findWinPattern = function(i1,i2,i3){
         getWinMoves().forEach(element => {
             if(
-                findMatch(element,i1)
-                && findMatch(element,i2)
-                && !findMatch(element,i3)
+                findMatch(getPlayerMoves(getPlayer()),element,i1)
+                && findMatch(getPlayerMoves(getPlayer()),element,i2)
+                && !findMatch(getPlayerMoves(getPlayer()),element,i3)
                 && getBoard()[i3] == 0
-                ){
+            ){
                 winningMove = element[i3];
             };
         });
@@ -59,7 +58,6 @@ function Cell(){
 })();
 
 (function WinCondition(){
-    let winner;
     const winMoves = [
         [0,1,2],
         [3,4,5],
@@ -70,27 +68,46 @@ function Cell(){
         [0,4,8],
         [2,4,6]
     ];
-    const playerMoves = [];
     getPlayerMoves = (player) => {
+        let playerMoves = [];
         playerMoves.length = 0;
         getBoard().forEach((element, index) => 
             element == player ? playerMoves.push(index) : 0);
             return playerMoves;
     };
     getWinMoves = () => winMoves;
-    findMatch = (winArray,index) => {
-        return getPlayerMoves(getPlayer()).includes(winArray[index]);
-    }
+    findMatch = (toMatch,winArray,index) => {
+            return toMatch.includes(winArray[index]);
+        }
     getWinner = () => {
+        let winner;
         getWinMoves().forEach(element => {
-            if(findMatch(element,0) && findMatch(element,1) && findMatch(element,2)){
-                // alert(`Player ${getPlayer()} wins at line ${element.toString()}`)
+            if(
+                getPlayer()
+                && findMatch(getPlayerMoves(getPlayer()),element,0) 
+                && findMatch(getPlayerMoves(getPlayer()),element,1) 
+                && findMatch(getPlayerMoves(getPlayer()),element,2)
+            ){
                 winner = element;
             }
         });
         return winner;
     }
-
+    getDraw = () => {
+        let draw;
+        let potentialMoves;
+        potentialMoves = getPlayerMoves(getPlayer()).concat(getPlayerMoves(0))
+        getWinMoves().forEach(element => {
+            if(
+                !findMatch(potentialMoves,element,0) 
+                && !findMatch(potentialMoves,element,1) 
+                && !findMatch(potentialMoves,element,2)
+            ){
+                draw = 1;
+            }
+        });
+        return draw;
+    }
 })();
 
 (function GameController(){
@@ -99,7 +116,7 @@ function Cell(){
             playerMove = () => +prompt(`Choose from ${getPlayerMoves(0).toString()}`);
             let input = playerMove();
             if (getPlayerMoves(0).includes(input)) {
-                updateBoard(input,1)
+                updateBoard(input,1);
             } else if (!getBoard().includes(0)){
                 alert(`no more moves left!`)
             }
@@ -108,19 +125,43 @@ function Cell(){
             alert(`opponent has made a move`);
         }
     }
-
     const playTurn = function(){
         switchPlayer();
-        takeInput()
-        getWinner()
-        ? console.log(`Player ${getPlayer()} wins with ${getWinner().toString()} move`)
-        : playTurn();
+        drawBoard();
+        takeInput();
+        if(getWinner()){
+            console.log(`Player ${getPlayer()} wins with a ${getWinner().toString()} move`)
+        } else if(getDraw() || !getBoard().includes(0)){
+            console.log(`It's a draw! Run a new game!`);
+        } else {
+            playTurn();
+        };
     }
-
     runGame = () => {
         resetBoard();
+        drawBoard();
         resetPlayer();
         playTurn();
     }
   
+})();
+
+(function uiController(){
+    const cells = document.querySelectorAll('.cells');
+    drawBoard = () => {
+        getBoard().forEach((element,index) => {
+            if(element == 1){
+                cells[index].innerText = '😝';
+            } else if (element == 2){
+                cells[index].innerText = '🤡';
+            } else {
+                cells[index].innerText = '';
+            }
+            if(getWinner()){
+                getWinner().forEach(element => {
+                    cells[element].classList.toggle('winner');
+                })
+            }
+        })
+    }
 })();

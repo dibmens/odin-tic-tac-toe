@@ -104,10 +104,14 @@ body {
 }
 
 
-.c1, .c2, .c3, .c4, .c5, .c6 {
+.c0, .c1, .c2, .c3, .c4, .c5 {
     border-bottom: 5px solid aliceblue;
 }
 
-.c1, .c2, .c4, .c5, .c7, .c8 {
+.c0, .c1, .c3, .c4, .c6, .c7 {
     border-right: 5px solid aliceblue;
 } 
+
+.winner {
+    background-color: rgb(111, 199, 111);
+}
