@@ -78,6 +78,17 @@ body {
     align-self: flex-end;
 }
 
+.reply,
+.reset {
+    border: none;
+    color: yellow;
+    background-color: rgb(120, 160, 120);
+    font-weight: 700;
+    font-size: 1em;
+}
+.reply:hover {
+    color: white;
+}
 
 .chat-bubble-game {
     background-color: steelblue;
@@ -99,7 +110,7 @@ body {
 }
 
 .cells:hover {
-    background-color: rgba(255,255, 255, .4);
+    background-color: rgba(255,255, 255, .1);
     
 }
 
@@ -114,4 +125,8 @@ body {
 
 .winner {
     background-color: rgb(111, 199, 111);
+}
+
+.hidden {
+    display: none;
 }

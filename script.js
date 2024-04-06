@@ -54,6 +54,7 @@
             let pickRandom = () => Math.trunc(Math.random()*getPlayerMoves(0).length);
             updateBoard(getPlayerMoves(0)[pickRandom()],2);
         }
+        nextTurn();
     } 
 })();
 
@@ -111,39 +112,22 @@
 })();
 
 (function GameController(){
-    const takeInput = function(){
-        if(getPlayer() == 1){
-            playerMove = () => +prompt(`Choose from ${getPlayerMoves(0).toString()}`);
-            let input = playerMove();
-            if (getPlayerMoves(0).includes(input)) {
-                updateBoard(input,1);
-            } else if (!getBoard().includes(0)){
-                alert(`no more moves left!`)
-            }
-        } else if(getPlayer() == 2){
-            moveAi();
-            alert(`opponent has made a move`);
-        }
-    }
-    const playTurn = function(){
-        switchPlayer();
-        drawBoard();
-        takeInput();
-        if(getWinner()){
-            console.log(`Player ${getPlayer()} wins with a ${getWinner().toString()} move`)
-        } else if(getDraw() || !getBoard().includes(0)){
-            console.log(`It's a draw! Run a new game!`);
-        } else {
-            playTurn();
-        };
-    }
     runGame = () => {
         resetBoard();
-        drawBoard();
         resetPlayer();
-        playTurn();
+        drawBoard();
+        switchPlayer();
+        movePlayer();
     }
-  
+    nextTurn = () => {
+        getWinner();
+        getDraw();
+        drawBoard();
+        switchPlayer();
+        if(getPlayer()==1){
+            movePlayer()
+        } else {moveAi()}
+    }
 })();
 
 (function uiController(){
@@ -156,12 +140,84 @@
                 cells[index].innerText = '🤡';
             } else {
                 cells[index].innerText = '';
+                cells[index].classList.remove(`winner`);
             }
             if(getWinner()){
                 getWinner().forEach(element => {
-                    cells[element].classList.toggle('winner');
-                })
+                    cells[element].classList.add('winner');})
             }
         })
     }
+    movePlayer = () => {
+        cells.forEach((element,index) => {
+            element.addEventListener(`click`, () => {
+                console.log(`testo`);
+                if (getBoard()[index] == 0 && getPlayer() == 1){
+                    updateBoard(index,1)
+                    nextTurn();
+                }
+            })
+        })
+    }
+    const randomize = (n) => Math.trunc(Math.random()*n);
+    replyChat = () => {
+        const replies = [
+            `Alright! Let's dig you a tic tac tomb`,
+            `Famous last words! You're on!`,
+            `Let's see who's going to do the smashing around here!`,
+            `That's the thing with you clowns- gluttons for humiliation!`,
+            `A bet, huh? How are you going to repay me- in balloon animals?`,
+            `You? Smash me? You really are a clown!`
+        ];
+        document.querySelector(`.reply`).addEventListener(`click`, () => {
+            document.querySelector(`.reply`).classList.add(`hidden`);
+            document.querySelector(`.reply-box`).innerText = 
+                replies[randomize(replies.length)]+' 😝';
+            setTimeout(() => {
+                document.querySelector(`.start`).classList.remove(`hidden`);
+                }, 2300
+            );
+            setTimeout(() => {
+                document.querySelector(`.chat-bubble-game`).classList.remove(`hidden`)
+                }, 3300
+            );
+            runGame();
+        })
+    }
+    resetMessage = () => {
+        const winReplies = [
+            `Get clowned! I win!`,
+            `Uh oh I win. Better luck next time`,
+            `That's all you've got? Pathetic!`,
+            `Surely you can do better than that!`,
+            `I win! You lose. Universe is at peace!`,
+            `Easy! Like taking candy-cotton from a clown`
+        ]
+        const lossReplies = [
+            `Wait, you can actually win? Damn...`,
+            `Ok, I didn't expect that...`,
+            `One in a million, truly, congrats.`,
+            `Alright. You smashed me. Happy?`,
+            `I...lost? How?`,
+            `My mad. Just warming up`
+        ]
+        const resultMessage = document.querySelector(`.result`)
+        const resetBubble = document.querySelector(`.reset-box`);
+        resultMessage.classList.remove(`hidden`);
+        if(win){
+            resultMessage.innerText = winReplies[randomize(winReplies.length)]
+        } else if (loss){
+            resultMessage.innerText = lossReplies[randomize(lossReplies.length)]
+        }
+        setTimeout(() => {
+            resetBubble.classList.remove(`hidden`)
+        }, 1500
+        );
+        document.querySelector(`.reset`).addEventListener(`click`, () => {
+            resultMessage.classList.add(`hidden`);
+            resetBubble.classList.add(`hidden`)
+            runGame();
+        })
+    }
+    return replyChat();
 })();

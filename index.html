@@ -14,10 +14,16 @@
                 <img class="profile" src="./tom.jpeg" alt="profile-picture">
                 <p class="chat-name">Tic Tac Tom</p>
             </div>
-            <div class="chat-box chat-bubble-incoming">Oy! Up for a quick game of tic-tac-toe? Bet I can smash you! 🤡🤡🤡</div>
-            <div class="chat-box chat-bubble-outgoing">Bring it on! I'd say prepare for a humiliation if you weren't already a clown! 😝😝😝</div>
-            <div class="chat-box chat-bubble-incoming">😝 VS 🤡 let's GO!</div>
-            <div class="chat-box chat-bubble-game">
+            <div class="chat-box chat-bubble-incoming">
+                Oy! Up for a quick game of tic-tac-toe? Bet I can smash you! 🤡🤡🤡
+            </div>
+            <div class="chat-box chat-bubble-outgoing reply-box">
+                <button class="reply">Reply</button>
+            </div>
+            <div class="chat-box chat-bubble-incoming start hidden">
+                😝 VS 🤡! Your move!
+            </div>
+            <div class="chat-box chat-bubble-game start hidden">
                 <button class="cells c0"></button>
                 <button class="cells c1"></button>
                 <button class="cells c2"></button>
@@ -28,7 +34,12 @@
                 <button class="cells c7"></button>
                 <button class="cells c8"></button>
             </div>
-            <div class="chat-box chat-bubble-outgoing turn">My turn!</div>
+            <div class="chat-box chat-bubble-outgoing result hidden">
+                I win!
+            </div>
+            <div class="chat-box chat-bubble-outgoing reset-box hidden">
+                <button class="reset">Again!</button>
+            </div>
         </div>
     </div>
 </body>
