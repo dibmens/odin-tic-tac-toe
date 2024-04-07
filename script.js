@@ -105,6 +105,8 @@
                 && !findMatch(potentialMoves,element,2)
             ){
                 draw = 1;
+            } else if (!getBoard().includes(0)){
+                draw = 1;
             }
         });
         return draw;
@@ -120,13 +122,20 @@
         movePlayer();
     }
     nextTurn = () => {
-        getWinner();
-        getDraw();
         drawBoard();
+        if(getWinner()){
+            resetMessage();
+        } else if(getDraw()){
+            resetMessage();
+        }
         switchPlayer();
-        if(getPlayer()==1){
-            movePlayer()
-        } else {moveAi()}
+        if(!getWinner() && !getDraw() && getPlayer()==1){
+            movePlayer();
+        } else if(!getWinner() && !getDraw() && getPlayer()==2){
+            setTimeout(()=> {
+                moveAi();
+            },1000);
+        }  
     }
 })();
 
@@ -151,7 +160,6 @@
     movePlayer = () => {
         cells.forEach((element,index) => {
             element.addEventListener(`click`, () => {
-                console.log(`testo`);
                 if (getBoard()[index] == 0 && getPlayer() == 1){
                     updateBoard(index,1)
                     nextTurn();
@@ -199,15 +207,23 @@
             `One in a million, truly, congrats.`,
             `Alright. You smashed me. Happy?`,
             `I...lost? How?`,
-            `My mad. Just warming up`
+            `My bad. Just warming up`
+        ]
+        const drawReplies = [
+            `Nobody wins. Just like in real life`,
+            `Draw. At least you didn't win`,
+            `We ran out of space. Try again?`,
+            `This will take a while...`
         ]
         const resultMessage = document.querySelector(`.result`)
         const resetBubble = document.querySelector(`.reset-box`);
         resultMessage.classList.remove(`hidden`);
-        if(win){
+        if(getWinner() && getPlayer() == 1){
             resultMessage.innerText = winReplies[randomize(winReplies.length)]
-        } else if (loss){
+        } else if (getWinner() && getPlayer() == 2){
             resultMessage.innerText = lossReplies[randomize(lossReplies.length)]
+        } else {
+            resultMessage.innerText = drawReplies[randomize(drawReplies.length)]
         }
         setTimeout(() => {
             resetBubble.classList.remove(`hidden`)
